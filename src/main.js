@@ -33,6 +33,21 @@ const sunLight = new THREE.DirectionalLight(0xffffff, 2);
 sunLight.position.set(5, 10, 5);
 scene.add(sunLight);
 
+// skybox
+const skyLoader = new THREE.CubeTextureLoader();
+
+const skybox = skyLoader.load([
+  '/skybox/px.png', 
+  '/skybox/nx.png',
+  '/skybox/py.png',  
+  '/skybox/ny.png',
+  '/skybox/pz.png',
+  '/skybox/nz.png'
+]);
+scene.background = skybox;
+
+
+
 // load terrain FBX
 const fbxLoader = new FBXLoader();
 
