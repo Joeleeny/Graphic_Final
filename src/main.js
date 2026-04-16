@@ -5,7 +5,7 @@ import { FBXLoader } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/j
 import { PointerLockControls } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/controls/PointerLockControls.js/+esm';
 import desertTerrainUrl from './desert_terrain.fbx?url';
 import palmTreeUrl from './palm_tree.glb?url';
-
+import retroTVURL from './TheRetroTV.glb?url';
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x87CEEB);
 
@@ -16,7 +16,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-camera.position.set(10, 0, 0);
+camera.position.set(10, 1, 0);
 camera.lookAt(0, 0, 0);
 
 //renderer
@@ -51,7 +51,7 @@ const fbxLoader = new FBXLoader();
 fbxLoader.load(
   desertTerrainUrl,
   (terrain) => {
-    terrain.position.set(0, -10, 0);
+    terrain.position.set(0, -5, 0);
     terrain.scale.set(0.0005, 0.0005, 0.0005) // adjust as needed
     terrain.rotation.y = 0;
     terrain.rotation.z = 210.5;
@@ -85,18 +85,29 @@ loader.load(
   palmTreeUrl,
   (gltf) => {
     const tree1 = gltf.scene;
-    tree1.position.set(0, -9, 0);
+    tree1.position.set(0, -4, 0);
     tree1.scale.set(1, 1, 1);
     scene.add(tree1);
 
     const tree2 = tree1.clone();
-    tree2.position.set(2, -9, -1);
+    tree2.position.set(2, -4, -1);
     scene.add(tree2);
 
     const tree3 = tree1.clone();
-    tree3.position.set(0, -9, 2);
+    tree3.position.set(0, -4, 2);
     scene.add(tree3);
   },
+);
+
+// retro tv
+loader.load(
+  retroTVURL,
+  (gltf) =>{
+    const tv = gltf.scene;
+    tv.position.set(0, -5, 0);
+    tv.scale.set(0.1, 0.1, 0.1);
+    scene.add(tv);
+  }
 );
 
 window.addEventListener('resize', () => {
