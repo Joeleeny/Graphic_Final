@@ -54,7 +54,7 @@ fbxLoader.load(
     terrain.position.set(0, -10, 0);
     terrain.scale.set(0.0005, 0.0005, 0.0005) // adjust as needed
     terrain.rotation.y = 0;
-    terrain.rotation.z = 204.3;
+    terrain.rotation.z = 210.5;
 
     terrain.traverse((child) => {
       if (child.isMesh) {
@@ -111,9 +111,36 @@ document.addEventListener('click', () => {
   controls.lock();
 })
 
+// user controls for moving around in program (w, a, s, d)
+let moveW = false, moveA = false, moveS = false, moveD = false;
+document.addEventListener('keydown', (keys) => {
+  if (keys.code === 'KeyW') moveW = true;
+  if (keys.code === 'KeyA') moveA = true;
+  if (keys.code === 'KeyS') moveS = true;
+  if (keys.code === 'KeyD') moveD = true;
+});
+
+document.addEventListener('keyup', (keys) => {
+  if (keys.code === 'KeyW') moveW = false;
+  if (keys.code === 'KeyA') moveA = false;
+  if (keys.code === 'KeyS') moveS = false;
+  if (keys.code === 'KeyD') moveD = false;
+});
+
+
+
 function animate() {
   requestAnimationFrame(animate);
-  renderer.render(scene, camera);
+  if (controls.isLocked) {
+    const speed = 0.15;
+    if (moveW) controls.moveForward(speed);
+    if (moveS) controls.moveForward(-speed);
+    if (moveA) controls.moveRight(-speed);
+    if (moveD) controls.moveRight(speed);
 
+    // Camera height
+    camera.position.y = 2;
+  }
+  renderer.render(scene, camera);
 }
 animate();
