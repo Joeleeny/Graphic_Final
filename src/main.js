@@ -2,8 +2,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.158.0/+esm';
 //importing methods for the glb files
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/GLTFLoader.js/+esm';
 import { FBXLoader } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/FBXLoader.js/+esm';
-
-
+import { PointerLockControls } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/controls/PointerLockControls.js/+esm';
 import desertTerrainUrl from './desert_terrain.fbx?url';
 import palmTreeUrl from './palm_tree.glb?url';
 
@@ -17,7 +16,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-camera.position.set(20, 8, 8);
+camera.position.set(10, 0, 0);
 camera.lookAt(0, 0, 0);
 
 //renderer
@@ -37,16 +36,14 @@ scene.add(sunLight);
 const skyLoader = new THREE.CubeTextureLoader();
 
 const skybox = skyLoader.load([
-  '/skybox/px.png', 
+  '/skybox/px.png',
   '/skybox/nx.png',
-  '/skybox/py.png',  
+  '/skybox/py.png',
   '/skybox/ny.png',
   '/skybox/pz.png',
   '/skybox/nz.png'
 ]);
 scene.background = skybox;
-
-
 
 // load terrain FBX
 const fbxLoader = new FBXLoader();
@@ -108,8 +105,15 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
+// mouse camera movement
+const controls = new PointerLockControls(camera, document.body);
+document.addEventListener('click', () => {
+  controls.lock();
+})
+
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
+
 }
 animate();
