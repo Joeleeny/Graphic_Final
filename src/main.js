@@ -50,13 +50,6 @@ scene.add(gridHelper);
 const axesHelper = new THREE.AxesHelper(5);
 scene.add(axesHelper);
 
-// test cube
-const testCube = new THREE.Mesh(
-  new THREE.BoxGeometry(1, 1, 1),
-  new THREE.MeshStandardMaterial({ color: 0xff0000 })
-);
-testCube.position.set(0, 0.5, 0);
-scene.add(testCube);
 
 // loaders
 const gltfLoader = new GLTFLoader();
@@ -67,8 +60,8 @@ objLoader.load(
   (terrain) => {
     console.log('terrain loaded', terrain);
 
-    terrain.scale.set(0.1, 0.1, 0.1);
-    terrain.position.set(0, -1, 0);
+    terrain.scale.set(3.5, 3.5, 3.5);
+    terrain.position.set(0, 0, 0);
     terrain.rotation.set(0, 0, 0);
 
     terrain.traverse((child) => {
@@ -98,16 +91,16 @@ gltfLoader.load(
   palmTreeUrl,
   (gltf) => {
     const tree1 = gltf.scene;
-    tree1.position.set(-2, 0, -2);
+    tree1.position.set(-2, 2.1, -2);
     tree1.scale.set(1, 1, 1);
     scene.add(tree1);
 
     const tree2 = tree1.clone();
-    tree2.position.set(2, 0, -1);
+    tree2.position.set(2, 2, -1);
     scene.add(tree2);
 
     const tree3 = tree1.clone();
-    tree3.position.set(0, 0, 2);
+    tree3.position.set(0, 2.3, 2);
     scene.add(tree3);
 
     console.log('Palm trees loaded');
