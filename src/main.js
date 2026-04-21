@@ -1,35 +1,30 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.158.0/+esm';
-//importing methods for the glb files
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/GLTFLoader.js/+esm';
-import { FBXLoader } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/FBXLoader.js/+esm';
 import { PointerLockControls } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/controls/PointerLockControls.js/+esm';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
 
-//Shawn, try to keep these (below and up above) separated. It helps me organize things.
-import desertTerrainUrl from './desert_terrain.fbx?url';
 import palmTreeUrl from './palm_tree.glb?url';
 import retroTVURL from './TheRetroTV.glb?url';
-import ShawnURL from './Shawn.fbx?url';
 
-//Also keep a space between the real code and the imports please
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x87CEEB);
 
-//camera
+// camera
 const camera = new THREE.PerspectiveCamera(
   75,
   window.innerWidth / window.innerHeight,
   0.1,
   1000
 );
-camera.position.set(10, 1, 0);
-camera.lookAt(0, 0, 0);
+camera.position.set(0, 2, 8);
 
-//renderer
+// renderer
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.style.margin = '0';
 document.body.appendChild(renderer.domElement);
 
-//light
+// lights
 const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
 scene.add(ambientLight);
 
@@ -39,8 +34,7 @@ scene.add(sunLight);
 
 // skybox
 const skyLoader = new THREE.CubeTextureLoader();
-
-const skybox = skyLoader.load([
+scene.background = skyLoader.load([
   '/skybox/px.png',
   '/skybox/nx.png',
   '/skybox/py.png',
@@ -48,115 +42,144 @@ const skybox = skyLoader.load([
   '/skybox/pz.png',
   '/skybox/nz.png'
 ]);
-scene.background = skybox;
 
-// load terrain FBX
-const fbxLoader = new FBXLoader();
+// helpers so you can see where the world is
+const gridHelper = new THREE.GridHelper(40, 40);
+scene.add(gridHelper);
 
-fbxLoader.load(
-  desertTerrainUrl,
+const axesHelper = new THREE.AxesHelper(5);
+scene.add(axesHelper);
+
+// test cube
+const testCube = new THREE.Mesh(
+  new THREE.BoxGeometry(1, 1, 1),
+  new THREE.MeshStandardMaterial({ color: 0xff0000 })
+);
+testCube.position.set(0, 0.5, 0);
+scene.add(testCube);
+
+// loaders
+const gltfLoader = new GLTFLoader();
+const objLoader = new OBJLoader();
+
+objLoader.load(
+  '/desert.obj',
   (terrain) => {
-    terrain.position.set(0, -5, 0);
-    terrain.scale.set(0.0005, 0.0005, 0.0005) // adjust as needed
-    terrain.rotation.y = 0;
-    terrain.rotation.z = 210.5;
+    console.log('terrain loaded', terrain);
+
+    terrain.scale.set(0.1, 0.1, 0.1);
+    terrain.position.set(0, -1, 0);
+    terrain.rotation.set(0, 0, 0);
 
     terrain.traverse((child) => {
       if (child.isMesh) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0xc2b280,
+          side: THREE.DoubleSide
+        });
         child.castShadow = false;
         child.receiveShadow = true;
-
-        // give it a desert-like material if the FBX has no material
-        if (!child.material) {
-          child.material = new THREE.MeshStandardMaterial({
-            color: 0xb7a674
-          });
-        }
       }
     });
 
     scene.add(terrain);
+
+    const box = new THREE.BoxHelper(terrain, 0xffff00);
+    scene.add(box);
   },
   undefined,
   (error) => {
-    console.error('Error loading desert terrain FBX:', error);
+    console.error('OBJ error:', error);
   }
 );
 
-const loader = new GLTFLoader();
-
-//palm trees
-loader.load(
+// palm trees
+gltfLoader.load(
   palmTreeUrl,
   (gltf) => {
     const tree1 = gltf.scene;
-    tree1.position.set(0, -4, 0);
+    tree1.position.set(-2, 0, -2);
     tree1.scale.set(1, 1, 1);
     scene.add(tree1);
 
     const tree2 = tree1.clone();
-    tree2.position.set(2, -4, -1);
+    tree2.position.set(2, 0, -1);
     scene.add(tree2);
 
     const tree3 = tree1.clone();
-    tree3.position.set(0, -4, 2);
+    tree3.position.set(0, 0, 2);
     scene.add(tree3);
-  },
-);
 
-// retro tv
-loader.load(
-  retroTVURL,
-  (gltf) =>{
-    const tv = gltf.scene;
-    tv.position.set(0, -5, 0);
-    tv.scale.set(0.1, 0.1, 0.1);
-    scene.add(tv);
+    console.log('Palm trees loaded');
+  },
+  undefined,
+  (error) => {
+    console.error('Error loading palm_tree.glb:', error);
   }
 );
 
+// tv
+gltfLoader.load(
+  retroTVURL,
+  (gltf) => {
+    const tv = gltf.scene;
+    tv.position.set(0, 0, -3);
+    tv.scale.set(0.1, 0.1, 0.1);
+    scene.add(tv);
+
+    console.log('TV loaded');
+  },
+  undefined,
+  (error) => {
+    console.error('Error loading TheRetroTV.glb:', error);
+  }
+);
+
+// resize
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// mouse camera movement
+// controls
 const controls = new PointerLockControls(camera, document.body);
 document.addEventListener('click', () => {
   controls.lock();
-})
-
-// user controls for moving around in program (w, a, s, d)
-let moveW = false, moveA = false, moveS = false, moveD = false;
-document.addEventListener('keydown', (keys) => {
-  if (keys.code === 'KeyW') moveW = true;
-  if (keys.code === 'KeyA') moveA = true;
-  if (keys.code === 'KeyS') moveS = true;
-  if (keys.code === 'KeyD') moveD = true;
 });
 
-document.addEventListener('keyup', (keys) => {
-  if (keys.code === 'KeyW') moveW = false;
-  if (keys.code === 'KeyA') moveA = false;
-  if (keys.code === 'KeyS') moveS = false;
-  if (keys.code === 'KeyD') moveD = false;
+// movement
+let moveW = false;
+let moveA = false;
+let moveS = false;
+let moveD = false;
+
+document.addEventListener('keydown', (event) => {
+  if (event.code === 'KeyW') moveW = true;
+  if (event.code === 'KeyA') moveA = true;
+  if (event.code === 'KeyS') moveS = true;
+  if (event.code === 'KeyD') moveD = true;
 });
 
-
+document.addEventListener('keyup', (event) => {
+  if (event.code === 'KeyW') moveW = false;
+  if (event.code === 'KeyA') moveA = false;
+  if (event.code === 'KeyS') moveS = false;
+  if (event.code === 'KeyD') moveD = false;
+});
 
 function animate() {
   requestAnimationFrame(animate);
+
   if (controls.isLocked) {
-    const speed = 0.15;
+    const speed = 0.08;
     if (moveW) controls.moveForward(speed);
     if (moveS) controls.moveForward(-speed);
     if (moveA) controls.moveRight(-speed);
     if (moveD) controls.moveRight(speed);
-
-    // Camera height
-    camera.position.y = 2;
   }
+
   renderer.render(scene, camera);
 }
+
 animate();
