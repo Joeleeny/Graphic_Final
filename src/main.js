@@ -86,6 +86,38 @@ objLoader.load(
   }
 );
 
+// loads Shawn
+objLoader.load(
+  '/shawn.obj',
+  (asian) => {
+    console.log('asian loaded', asian);
+
+    asian.scale.set(1.5, 1.5, 1.5);
+    asian.position.set(0, 0.3, 0);
+    asian.rotation.set(0, 0, 0);
+
+    asian.traverse((child) => {
+      if (child.isMesh) {
+        child.material = new THREE.MeshStandardMaterial({
+          side: THREE.DoubleSide
+        });
+        child.castShadow = false;
+        child.receiveShadow = true;
+      }
+    });
+
+    scene.add(asian);
+
+    const box = new THREE.BoxHelper(asian, 0xffff00);
+    scene.add(box);
+  },
+  undefined,
+  (error) => {
+    console.error('OBJ error:', error);
+  }
+);
+
+
 // palm trees
 gltfLoader.load(
   palmTreeUrl,
@@ -127,6 +159,8 @@ gltfLoader.load(
     console.error('Error loading TheRetroTV.glb:', error);
   }
 );
+
+
 
 // resize
 window.addEventListener('resize', () => {
