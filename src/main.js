@@ -6,7 +6,8 @@ import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
 
 import palmTreeUrl from './palm_tree.glb?url';
 import retroTVURL from './TheRetroTV.glb?url';
-
+import hutURL from './hut.glb?url';
+import { roughness } from 'three/tsl';
 const scene = new THREE.Scene();
 
 // camera
@@ -22,6 +23,7 @@ camera.position.set(0, 2, 8);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.style.margin = '0';
+renderer.outputColorSpace = THREE.SRGBColorSpace;
 document.body.appendChild(renderer.domElement);
 
 // lights
@@ -160,7 +162,35 @@ gltfLoader.load(
   }
 );
 
+// mud hut
+gltfLoader.load(
+  hutURL,
+  (gltf) => {
+    const mudHut = gltf.scene;
+    mudHut.traverse((child) => {
+      if (child.isMesh) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0xd2b48c,
+          roughness: 5.0,
+          metalness: -1.0,
+          side: THREE.DoubleSide
+        })
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
 
+    mudHut.position.set(-1, 0.2, -8);
+    mudHut.scale.set(0.1, 0.08, 0.1);
+    scene.add(mudHut);
+
+    console.log('mudHut loaded');
+  },
+  undefined,
+  (error) => {
+    console.error('Error loading hut.glb:', error);
+  }
+);
 
 // resize
 window.addEventListener('resize', () => {
