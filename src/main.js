@@ -3,9 +3,14 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.158.0/+esm';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/GLTFLoader.js/+esm';
 import { FBXLoader } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/FBXLoader.js/+esm';
 import { PointerLockControls } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/controls/PointerLockControls.js/+esm';
+
+//Shawn, try to keep these (below and up above) separated. It helps me organize things.
 import desertTerrainUrl from './desert_terrain.fbx?url';
 import palmTreeUrl from './palm_tree.glb?url';
 import retroTVURL from './TheRetroTV.glb?url';
+import ShawnURL from './Shawn.fbx?url';
+
+//Also keep a space between the real code and the imports please
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x87CEEB);
 
