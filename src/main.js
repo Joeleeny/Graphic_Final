@@ -6,12 +6,12 @@ import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
 
 const BASE = import.meta.env.BASE_URL;
 
-const palmTreeUrl = '/palm_tree.glb';
-const retroTVURL = '/TheRetroTV.glb';
-const hutURL = '/hut.glb';
-const poolURL = '/pool.glb';
-const chairURL = '/chair.glb';
-const umberellaURL = '/umberella.glb';
+const palmTreeUrl = `${BASE}palm_tree.glb`;
+const retroTVURL = `${BASE}TheRetroTV.glb`;
+const hutURL = `${BASE}hut.glb`;
+const poolURL = `${BASE}pool.glb`;
+const chairURL = `${BASE}chair.glb`;
+const umberellaURL = `${BASE}umberella.glb`;
 
 import { roughness } from 'three/tsl';
 
