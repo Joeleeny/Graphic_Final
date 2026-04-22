@@ -4,12 +4,14 @@ import { PointerLockControls } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
 
-import palmTreeUrl from './palm_tree.glb?url';
-import retroTVURL from './TheRetroTV.glb?url';
-import hutURL from './hut.glb?url';
-import poolURL from './pool.glb?url';
-import chairURL from './chair.glb?url';
-import umberellaURL from './umberella.glb?url'
+const BASE = import.meta.env.BASE_URL;
+
+const palmTreeUrl = `${BASE}palm_tree.glb`;
+const retroTVURL = `${BASE}TheRetroTV.glb`;
+const hutURL = `${BASE}hut.glb`;
+const poolURL = `${BASE}pool.glb`;
+const chairURL = `${BASE}chair.glb`;
+const umberellaURL = `${BASE}umberella.glb`;
 
 import { roughness } from 'three/tsl';
 
@@ -74,12 +76,12 @@ lightButton.addEventListener('click', () => {
 // skybox
 const skyLoader = new THREE.CubeTextureLoader();
 scene.background = skyLoader.load([
-  '/skybox/px.png',
-  '/skybox/nx.png',
-  '/skybox/py.png',
-  '/skybox/ny.png',
-  '/skybox/pz.png',
-  '/skybox/nz.png'
+  `${BASE}skybox/px.png`,
+  `${BASE}skybox/nx.png`,
+  `${BASE}skybox/py.png`,
+  `${BASE}skybox/ny.png`,
+  `${BASE}skybox/pz.png`,
+  `${BASE}skybox/nz.png`
 ]);
 
 //shader
@@ -111,10 +113,10 @@ const gltfLoader = new GLTFLoader();
 const objLoader = new OBJLoader();
 const textureLoader = new THREE.TextureLoader();
 
-const grassTexture = textureLoader.load('/grass.jpg');
+const grassTexture = textureLoader.load(`${BASE}grass.jpg`);
 
 objLoader.load(
-  '/desert.obj',
+  `${BASE}desert.obj`,
   (terrain) => {
     console.log('terrain loaded', terrain);
 
@@ -144,7 +146,7 @@ objLoader.load(
 // loads Shawn
 let shawnModel;
 objLoader.load(
-  '/shawn.obj',
+  `${BASE}shawn.obj`,
   (asian) => {
     shawnModel = asian;
     console.log('asian loaded', shawnModel);
@@ -182,7 +184,7 @@ const fishPoints = [
 ];
 //Loads "fish"
 objLoader.load(
-  '/orca.obj',
+  `${BASE}orca.obj`,
   (fish) => {
     console.log('fish loaded', fish);
 
@@ -211,7 +213,7 @@ objLoader.load(
 
 //grass patch
 objLoader.load(
-  'grass.obj',
+  `${BASE}grass.obj`,
   (grass)=> {
     console.log('grass loaded', grass);
     grass.scale.set(0.02,0.02,0.02);
@@ -240,7 +242,7 @@ objLoader.load(
 
 // 3ds
 objLoader.load(
-  '3ds.obj',
+  `${BASE}3ds.obj`,
   (ds) => {
     console.log('ds loaded', ds);
 
