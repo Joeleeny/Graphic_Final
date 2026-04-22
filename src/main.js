@@ -80,14 +80,7 @@ scene.background = skyLoader.load([
   '/skybox/nz.png'
 ]);
 
-// helpers so you can see where the world is
-// const gridHelper = new THREE.GridHelper(40, 40);
-// scene.add(gridHelper);
-
-// const axesHelper = new THREE.AxesHelper(5);
-// scene.add(axesHelper);
-
-// simple shader
+//shader
 const shader = new THREE.ShaderMaterial({
   vertexShader: `
     varying vec3 vNormal;
@@ -136,9 +129,6 @@ objLoader.load(
     });
 
     scene.add(terrain);
-
-    const box = new THREE.BoxHelper(terrain, 0xffff00);
-    scene.add(box);
   },
   undefined,
   (error) => {
@@ -168,9 +158,6 @@ objLoader.load(
     });
 
     scene.add(shawnModel);
-
-    const box = new THREE.BoxHelper(asian, 0xffff00);
-    scene.add(box);
   },
   undefined,
   (error) => {
