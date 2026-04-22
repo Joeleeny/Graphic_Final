@@ -122,6 +122,44 @@ objLoader.load(
   }
 );
 
+//setup for fish animation
+let fishModel = null;
+let fishTargetIndex = 0;
+//point of intrest for fish
+const fishPoints = [
+  new THREE.Vector3(1, 1, 0),
+  new THREE.Vector3(-1, 1, 1),
+  new THREE.Vector3(-2, 1, -1),
+  new THREE.Vector3(-1, 1, -3)
+];
+//Loads "fish"
+objLoader.load(
+  '/orca.obj',
+  (fish) => {
+    console.log('fish loaded', fish);
+
+    fish.scale.set(0.1, 0.1, 0.1);
+    fish.position.copy(fishPoints[0]);
+    fish.rotation.set(0, 0, 0);
+
+    fish.traverse((child) => {
+      if (child.isMesh) {
+        child.material = new THREE.MeshStandardMaterial({
+          side: THREE.DoubleSide
+        });
+        child.castShadow = false;
+        child.receiveShadow = true;
+      }
+    });
+
+    fishModel = fish;
+    scene.add(fish);
+  },
+  undefined,
+  (error) => {
+    console.error('OBJ error:', error);
+  }
+);
 
 // palm trees
 gltfLoader.load(
@@ -251,6 +289,24 @@ document.addEventListener('keyup', (event) => {
 function animate() {
   requestAnimationFrame(animate);
 
+  //A very........ Fishy..... animation
+  if (fishModel) {
+  const target = fishPoints[fishTargetIndex];
+  const speed = 0.02;
+
+  fishModel.position.lerp(target, speed);
+
+  const distance = fishModel.position.distanceTo(target);
+
+  if (distance < 0.1) {
+    fishTargetIndex = (fishTargetIndex + 1) % fishPoints.length;
+  }
+
+  const nextTarget = fishPoints[fishTargetIndex];
+  fishModel.lookAt(nextTarget);
+  }
+
+  //camera "animation"
   if (controls.isLocked) {
     const speed = 0.08;
     if (moveW) controls.moveForward(speed);
