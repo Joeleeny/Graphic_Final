@@ -147,24 +147,27 @@ objLoader.load(
 );
 
 // loads Shawn
+let shawnModel;
 objLoader.load(
   '/shawn.obj',
   (asian) => {
-    console.log('asian loaded', asian);
+    shawnModel = asian;
+    console.log('asian loaded', shawnModel);
 
-    asian.scale.set(1.5, 1.5, 1.5);
-    asian.position.set(0, 1, 0);
-    asian.rotation.set(0, 1, -1.5);
+    shawnModel.scale.set(1.5, 1.5, 1.5);
+    shawnModel.position.set(0, 1, 0);
+    shawnModel.rotation.set(0, 1, -1.5);
 
-    asian.traverse((child) => {
+    shawnModel.traverse((child) => {
       if (child.isMesh) {
+        child.geometry.center();
         child.material = shader;
         child.castShadow = false;
         child.receiveShadow = true;
       }
     });
 
-    scene.add(asian);
+    scene.add(shawnModel);
 
     const box = new THREE.BoxHelper(asian, 0xffff00);
     scene.add(box);
@@ -358,6 +361,11 @@ function animate() {
 
     const nextTarget = fishPoints[fishTargetIndex];
     fishModel.lookAt(nextTarget);
+  }
+
+  // Shawn rotation animation
+  if(shawnModel){
+    shawnModel.rotation.y += 0.01;
   }
 
   //camera "animation"
