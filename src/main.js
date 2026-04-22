@@ -8,6 +8,8 @@ import palmTreeUrl from './palm_tree.glb?url';
 import retroTVURL from './TheRetroTV.glb?url';
 import hutURL from './hut.glb?url';
 import poolURL from './pool.glb?url';
+import chairURL from './chair.glb?url';
+import umberellaURL from './umberella.glb?url'
 
 import { roughness } from 'three/tsl';
 
@@ -114,6 +116,9 @@ const shader = new THREE.ShaderMaterial({
 // loaders
 const gltfLoader = new GLTFLoader();
 const objLoader = new OBJLoader();
+const textureLoader = new THREE.TextureLoader();
+
+const grassTexture = textureLoader.load('/grass.jpg');
 
 objLoader.load(
   '/desert.obj',
@@ -136,9 +141,6 @@ objLoader.load(
     });
 
     scene.add(terrain);
-
-    const box = new THREE.BoxHelper(terrain, 0xffff00);
-    scene.add(box);
   },
   undefined,
   (error) => {
@@ -168,9 +170,6 @@ objLoader.load(
     });
 
     scene.add(shawnModel);
-
-    const box = new THREE.BoxHelper(asian, 0xffff00);
-    scene.add(box);
   },
   undefined,
   (error) => {
@@ -217,6 +216,63 @@ objLoader.load(
   }
 );
 
+//grass patch
+objLoader.load(
+  'grass.obj',
+  (grass)=> {
+    console.log('grass loaded', grass);
+    grass.scale.set(0.02,0.02,0.02);
+    grass.position.set(-5, 0.5, 2);
+    grass.rotation.set(-89.5, 0, 0);
+
+    grass.traverse((child) => {
+    if (child.isMesh) {
+      child.material = new THREE.MeshStandardMaterial({
+        map: grassTexture,
+        side: THREE.DoubleSide
+      });
+
+      child.castShadow = false;
+      child.receiveShadow = true;
+    }
+    });
+
+    scene.add(grass);
+  },
+  undefined,
+  (error) => {
+    console.error('OBJ error:', error);
+  }
+);
+
+// 3ds
+objLoader.load(
+  '3ds.obj',
+  (ds) => {
+    console.log('ds loaded', ds);
+
+    ds.scale.set(0.1, 0.1, 0.1);
+    ds.position.set(-3.05, 0.7, 1);
+
+    ds.traverse((child) => {
+      if (child.isMesh) {
+        child.material = new THREE.MeshStandardMaterial({
+          side: THREE.DoubleSide
+        });
+
+        child.castShadow = false;
+        child.receiveShadow = true;
+      }
+    });
+
+    scene.add(ds);
+  },
+  undefined,
+  (error) => {
+    console.error('OBJ error:', error);
+  }
+);
+
 // palm trees
 gltfLoader.load(
   palmTreeUrl,
@@ -244,18 +300,55 @@ gltfLoader.load(
 
 // tv
 gltfLoader.load(
-  poolURL,
+  retroTVURL,
   (gltf) => {
-    const pool = gltf.scene;
-    pool.position.set(0, 0, -3);
-    pool.scale.set(0.1, 0.1, 0.1);
-    scene.add(pool);
+    const tv = gltf.scene;
+    tv.position.set(-4, 0.7, 1);
+    tv.rotation.set(0,-1,0);
+    tv.scale.set(0.1, 0.1, 0.1);
+    scene.add(tv);
 
-    console.log('pool loaded');
+    console.log('tv loaded');
   },
   undefined,
   (error) => {
-    console.error('Error loading pool.glb:', error);
+    console.error('Error loading tv.glb:', error);
+  }
+);
+
+// chair
+gltfLoader.load(
+  chairURL,
+  (gltf) => {
+    const chair = gltf.scene;
+    chair.position.set(-4, 2, 3);
+    chair.rotation.set(0, 1, 0);
+    chair.scale.set(0.005, 0.005, 0.005);
+    scene.add(chair);
+
+    console.log('chair loaded');
+  },
+  undefined,
+  (error) => {
+    console.error('Error loading chair.glb:', error);
+  }
+);
+
+// umberalla
+gltfLoader.load(
+  umberellaURL,
+  (gltf) => {
+    const umberalla = gltf.scene;
+    umberalla.position.set(-4, 0.7, 3);
+    umberalla.rotation.set(0, 10, 0);
+    umberalla.scale.set(2, 2, 2);
+    scene.add(umberalla);
+
+    console.log('umberalla loaded');
+  },
+  undefined,
+  (error) => {
+    console.error('Error loading umberalla.glb:', error);
   }
 );
 
