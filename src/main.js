@@ -22,6 +22,23 @@ const camera = new THREE.PerspectiveCamera(
 );
 camera.position.set(0, 2, 8);
 
+//this creates the button, could not do it in the index.html file because it would not show
+const lightButton = document.createElement('button');
+lightButton.textContent = 'DIM LIGHT';
+lightButton.style.position = 'fixed';
+lightButton.style.top = '20px';
+lightButton.style.left = '20px';
+lightButton.style.zIndex = '99999';
+lightButton.style.padding = '14px 18px';
+lightButton.style.background = 'red';
+lightButton.style.color = 'white';
+lightButton.style.border = '3px solid white';
+lightButton.style.fontSize = '18px';
+lightButton.style.fontWeight = 'bold';
+lightButton.style.cursor = 'pointer';
+
+document.body.appendChild(lightButton);
+
 // renderer
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -36,6 +53,21 @@ scene.add(ambientLight);
 const sunLight = new THREE.DirectionalLight(0xffffff, 2);
 sunLight.position.set(5, 10, 5);
 scene.add(sunLight);
+
+//button light
+let lightsDimmed = false;
+
+lightButton.addEventListener('click', () => {
+  lightsDimmed = !lightsDimmed;
+
+  if (lightsDimmed) {
+    ambientLight.intensity = 0.2;
+    sunLight.intensity = 0.5;
+  } else {
+    ambientLight.intensity = 1.2;
+    sunLight.intensity = 2;
+  }
+});
 
 // skybox
 const skyLoader = new THREE.CubeTextureLoader();
