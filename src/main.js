@@ -81,12 +81,35 @@ scene.background = skyLoader.load([
 ]);
 
 // helpers so you can see where the world is
-const gridHelper = new THREE.GridHelper(40, 40);
-scene.add(gridHelper);
+// const gridHelper = new THREE.GridHelper(40, 40);
+// scene.add(gridHelper);
 
 // const axesHelper = new THREE.AxesHelper(5);
 // scene.add(axesHelper);
 
+// simple shader
+const shader = new THREE.ShaderMaterial({
+  vertexShader: `
+    varying vec3 vNormal;
+    void main() {
+      vNormal = normalize(normalMatrix * normal);
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    uniform vec3 uColor;
+    varying vec3 vNormal;
+    void main() {
+      vec3 lightDirection = normalize(vec3(0.5, 1.0, 0.5));
+
+      float illumination = dot(vNormal, lightDirection);
+      illumination = max (illumination, 0.2);
+      
+      float intensity = illumination > 0.6 ? 1.0 : 0.3;
+      gl_FragColor = vec4(uColor * illumination, 1.0);
+    }
+  `
+});
 
 // loaders
 const gltfLoader = new GLTFLoader();
@@ -135,9 +158,7 @@ objLoader.load(
 
     asian.traverse((child) => {
       if (child.isMesh) {
-        child.material = new THREE.MeshStandardMaterial({
-          side: THREE.DoubleSide
-        });
+        child.material = shader;
         child.castShadow = false;
         child.receiveShadow = true;
       }
@@ -235,7 +256,7 @@ gltfLoader.load(
   }
 );
 
-// pool oasis lol
+// pool oasis
 gltfLoader.load(
   poolURL,
   (gltf) => {
@@ -243,6 +264,7 @@ gltfLoader.load(
     pool.position.set(0, 0, -1);
     pool.scale.set(2, 2, 2);
     pool.rotation.y = Math.PI / 1;
+
     scene.add(pool);
 
     console.log('pool loaded');
@@ -323,19 +345,19 @@ function animate() {
 
   //A very........ Fishy..... animation
   if (fishModel) {
-  const target = fishPoints[fishTargetIndex];
-  const speed = 0.02;
+    const target = fishPoints[fishTargetIndex];
+    const speed = 0.02;
 
-  fishModel.position.lerp(target, speed);
+    fishModel.position.lerp(target, speed);
 
-  const distance = fishModel.position.distanceTo(target);
+    const distance = fishModel.position.distanceTo(target);
 
-  if (distance < 0.1) {
-    fishTargetIndex = (fishTargetIndex + 1) % fishPoints.length;
-  }
+    if (distance < 0.1) {
+      fishTargetIndex = (fishTargetIndex + 1) % fishPoints.length;
+    }
 
-  const nextTarget = fishPoints[fishTargetIndex];
-  fishModel.lookAt(nextTarget);
+    const nextTarget = fishPoints[fishTargetIndex];
+    fishModel.lookAt(nextTarget);
   }
 
   //camera "animation"
