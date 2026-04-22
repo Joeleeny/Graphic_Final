@@ -7,7 +7,10 @@ import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
 import palmTreeUrl from './palm_tree.glb?url';
 import retroTVURL from './TheRetroTV.glb?url';
 import hutURL from './hut.glb?url';
+import poolURL from './pool.glb?url';
+
 import { roughness } from 'three/tsl';
+
 const scene = new THREE.Scene();
 
 // camera
@@ -49,8 +52,8 @@ scene.background = skyLoader.load([
 const gridHelper = new THREE.GridHelper(40, 40);
 scene.add(gridHelper);
 
-const axesHelper = new THREE.AxesHelper(5);
-scene.add(axesHelper);
+// const axesHelper = new THREE.AxesHelper(5);
+// scene.add(axesHelper);
 
 
 // loaders
@@ -95,8 +98,8 @@ objLoader.load(
     console.log('asian loaded', asian);
 
     asian.scale.set(1.5, 1.5, 1.5);
-    asian.position.set(0, 0.3, 0);
-    asian.rotation.set(0, 0, 0);
+    asian.position.set(0, 1, 0);
+    asian.rotation.set(0, 1, -1.5);
 
     asian.traverse((child) => {
       if (child.isMesh) {
@@ -125,16 +128,16 @@ gltfLoader.load(
   palmTreeUrl,
   (gltf) => {
     const tree1 = gltf.scene;
-    tree1.position.set(-2, 2.1, -2);
+    tree1.position.set(-3, 2.1, -3);
     tree1.scale.set(1, 1, 1);
     scene.add(tree1);
 
     const tree2 = tree1.clone();
-    tree2.position.set(2, 2, -1);
+    tree2.position.set(3, 2, -1);
     scene.add(tree2);
 
     const tree3 = tree1.clone();
-    tree3.position.set(0, 2.3, 2);
+    tree3.position.set(0, 2.3, 3);
     scene.add(tree3);
 
     console.log('Palm trees loaded');
@@ -147,18 +150,36 @@ gltfLoader.load(
 
 // tv
 gltfLoader.load(
-  retroTVURL,
+  poolURL,
   (gltf) => {
-    const tv = gltf.scene;
-    tv.position.set(0, 0, -3);
-    tv.scale.set(0.1, 0.1, 0.1);
-    scene.add(tv);
+    const pool = gltf.scene;
+    pool.position.set(0, 0, -3);
+    pool.scale.set(0.1, 0.1, 0.1);
+    scene.add(pool);
 
-    console.log('TV loaded');
+    console.log('pool loaded');
   },
   undefined,
   (error) => {
-    console.error('Error loading TheRetroTV.glb:', error);
+    console.error('Error loading pool.glb:', error);
+  }
+);
+
+// pool oasis lol
+gltfLoader.load(
+  poolURL,
+  (gltf) => {
+    const pool = gltf.scene;
+    pool.position.set(0, 0, -1);
+    pool.scale.set(2, 2, 2);
+    pool.rotation.y = Math.PI / 1;
+    scene.add(pool);
+
+    console.log('pool loaded');
+  },
+  undefined,
+  (error) => {
+    console.error('Error loading pool.glb:', error);
   }
 );
 
@@ -191,6 +212,8 @@ gltfLoader.load(
     console.error('Error loading hut.glb:', error);
   }
 );
+
+
 
 // resize
 window.addEventListener('resize', () => {
